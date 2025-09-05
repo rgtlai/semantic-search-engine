@@ -64,19 +64,19 @@ echo "✅ All prerequisites found"
 
 # Start backend in background
 echo "🐍 Setting up Python backend..."
-cd backend
 
 echo "🔧 Installing dependencies with uv..."
 uv sync
 
 echo "🚀 Starting FastAPI backend server..."
-uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 &
+mkdir -p logs
+cd backend
+uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 > ../logs/backend.log 2>&1 &
 BACKEND_PID=$!
+cd ..
 
 # Give backend time to start
 sleep 3
-
-cd ..
 
 # Start frontend in background
 echo "⚛️  Setting up React frontend..."
@@ -88,7 +88,7 @@ if [ ! -d "node_modules" ]; then
 fi
 
 echo "🚀 Starting React development server..."
-npm start &
+npm start > ../logs/frontend.log 2>&1 &
 FRONTEND_PID=$!
 
 cd ..
@@ -114,7 +114,8 @@ echo ""
 echo "💡 Tips:"
 echo "   - Press Ctrl+C to stop all servers"
 echo "   - Edit .env to configure API keys and settings"
-echo "   - Check logs above for any startup errors"
+echo "   - View backend logs: tail -f logs/backend.log"
+echo "   - View frontend logs: tail -f logs/frontend.log"
 echo ""
 echo "⏳ Servers are starting... (Frontend may take 30-60 seconds)"
 

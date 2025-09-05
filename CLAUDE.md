@@ -145,12 +145,14 @@ Based on Module_3 implementation:
 
 ### Backend Setup
 ```bash
+# Install dependencies from root-level pyproject.toml
+uv sync
+# Run the backend server
 cd backend
-uv sync  # Install dependencies from pyproject.toml
 uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-**Note**: This project uses `uv` for dependency management instead of `pip` and `requirements.txt`. The `pyproject.toml` file defines all dependencies and Python version requirements (>=3.11).
+**Note**: This project uses `uv` for dependency management instead of `pip` and `requirements.txt`. The `pyproject.toml` file is located in the project root and defines all dependencies and Python version requirements (>=3.11).
 
 ### Frontend Setup
 ```bash

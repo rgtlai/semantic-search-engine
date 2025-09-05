@@ -71,13 +71,12 @@ LOG_LEVEL=INFO
 ### 3. Backend Setup
 
 ```bash
-cd backend
-
-# Install Python dependencies
-pip install -r requirements.txt
+# Install Python dependencies using uv (from root directory)
+uv sync
 
 # Start the FastAPI server
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+cd backend
+uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The backend will be available at: http://localhost:8000

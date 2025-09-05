@@ -54,27 +54,18 @@ cd ..
 
 # Setup backend
 echo "🐍 Setting up Python backend for production..."
-cd backend
 
-if [ ! -d "venv" ]; then
-    echo "📦 Creating Python virtual environment..."
-    python3 -m venv venv
-fi
+echo "🔧 Installing dependencies with uv..."
+uv sync
 
-echo "🔧 Activating virtual environment and installing dependencies..."
-source venv/bin/activate
-
-# Install/upgrade pip and dependencies
-pip install --upgrade pip
-pip install -r requirements.txt
-
-# Additional production dependencies
-pip install gunicorn
+# Install additional production dependencies if not in pyproject.toml
+echo "📦 Installing production dependencies..."
+uv add gunicorn
 
 echo "📂 Copying React build to backend static folder..."
-rm -rf app/static/*
-mkdir -p app/static
-cp -r ../frontend/build/* app/static/
+rm -rf backend/app/static/*
+mkdir -p backend/app/static
+cp -r frontend/build/* backend/app/static/
 
 echo "🚀 Starting production server with Gunicorn..."
 echo ""
@@ -84,11 +75,15 @@ echo "📍 Application: http://localhost:8000"
 echo "📍 API Docs:    http://localhost:8000/docs"
 echo ""
 
-# Start with Gunicorn
-gunicorn app.main:app \
+# Create logs directory
+mkdir -p logs
+
+# Start with Gunicorn using uv run
+cd backend
+uv run gunicorn app.main:app \
     --bind 0.0.0.0:8000 \
     --workers 4 \
     --worker-class uvicorn.workers.UvicornWorker \
     --log-level info \
-    --access-logfile - \
-    --error-logfile -
+    --access-logfile ../logs/access.log \
+    --error-logfile ../logs/error.log
